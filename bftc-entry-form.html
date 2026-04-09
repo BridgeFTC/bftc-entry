@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BFTC | 対戦会エントリー</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --surface: #111118;
+    --surface2: #1a1a24;
+    --border: #2a2a3a;
+    --accent: #e8003d;
+    --text: #e8e8f0;
+    --text-dim: #7a7a9a;
+    --green: #00e57a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    min-height: 100vh;
+    padding-bottom: 60px;
+  }
+
+  header {
+    background: var(--surface);
+    border-bottom: 2px solid var(--accent);
+    padding: 0 24px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 24px; letter-spacing: 3px; }
+  .logo span { color: var(--accent); }
+  .event-badge { font-size: 11px; color: var(--text-dim); letter-spacing: 1px; }
+
+  .container { max-width: 680px; margin: 0 auto; padding: 32px 20px; }
+
+  .page-title { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 2px; margin-bottom: 6px; }
+  .page-sub { font-size: 12px; color: var(--text-dim); margin-bottom: 32px; line-height: 1.8; }
+
+  .section { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 24px; margin-bottom: 20px; }
+
+  .section-label {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 2px;
+    color: var(--text-dim);
+    border-left: 3px solid var(--accent);
+    padding-left: 10px;
+    margin-bottom: 20px;
+  }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .form-group:last-child { margin-bottom: 0; }
+
+  label { font-size: 11px; font-weight: 700; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
+  label .required { color: var(--accent); margin-left: 4px; }
+
+  input[type="text"] {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    color: var(--text);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 14px;
+    padding: 10px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  input[type="text"]:focus { border-color: var(--accent); }
+  input::placeholder { color: var(--text-dim); }
+
+  .member-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .member-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+    animation: slideIn 0.2s ease;
+  }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(-8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .member-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+
+  .member-num { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--accent); letter-spacing: 1px; }
+
+  .btn-remove {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: 'Noto Sans JP', sans-serif;
+    transition: all 0.2s;
+  }
+
+  .btn-remove:hover { border-color: var(--accent); color: var(--accent); }
+
+  .member-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .member-grid .form-group { margin-bottom: 0; }
+
+  .op-group { display: flex; gap: 8px; }
+
+  .op-label {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+  }
+
+  .op-label input { display: none; }
+
+  .op-label:has(input:checked) {
+    border-color: var(--accent);
+    background: rgba(232,0,61,0.12);
+    color: var(--accent);
+  }
+
+  .btn-add {
+    width: 100%;
+    padding: 12px;
+    background: transparent;
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+    color: var(--text-dim);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 4px;
+  }
+
+  .btn-add:hover { border-color: var(--accent); color: var(--accent); }
+
+  .notice-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 16px;
+    font-size: 12px;
+    line-height: 2;
+    color: var(--text-dim);
+    margin-bottom: 16px;
+    max-height: 240px;
+    overflow-y: auto;
+  }
+
+  .notice-box b { color: var(--text); display: block; margin-top: 10px; margin-bottom: 2px; font-size: 11px; letter-spacing: 1px; }
+  .notice-box b:first-child { margin-top: 0; }
+
+  .agree-row { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+
+  .agree-row input[type="checkbox"] {
+    width: 18px; height: 18px; margin-top: 1px;
+    accent-color: var(--accent); flex-shrink: 0; cursor: pointer;
+  }
+
+  .agree-text { font-size: 13px; line-height: 1.6; }
+
+  .btn-submit {
+    width: 100%;
+    padding: 16px;
+    background: var(--accent);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px;
+    letter-spacing: 3px;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 8px;
+  }
+
+  .btn-submit:hover { background: #c0002f; }
+  .btn-submit:disabled { background: var(--border); color: var(--text-dim); cursor: not-allowed; }
+
+  .success-screen { display: none; text-align: center; padding: 60px 20px; }
+  .success-icon { font-size: 56px; margin-bottom: 16px; }
+  .success-title { font-family: 'Bebas Neue', sans-serif; font-size: 32px; letter-spacing: 2px; margin-bottom: 10px; color: var(--green); }
+  .success-sub { font-size: 13px; color: var(--text-dim); line-height: 1.8; }
+
+  .error-msg { font-size: 11px; color: var(--accent); margin-top: 4px; display: none; }
+  .has-error input[type="text"] { border-color: var(--accent); }
+  .has-error .error-msg { display: block; }
+
+  .sending-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.7); z-index: 999;
+    align-items: center; justify-content: center; flex-direction: column; gap: 16px;
+  }
+  .sending-overlay.active { display: flex; }
+  .spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .sending-text { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">B<span>F</span>TC</div>
+  <div class="event-badge">対戦会エントリー</div>
+</header>
+
+<div class="container">
+  <div id="formScreen">
+    <div class="page-title">事前エントリーフォーム</div>
+    <div class="page-sub">
+      チーム代表者がメンバー全員分をまとめてご記入ください。<br>
+      メンバーは＋ボタンで追加できます。
+    </div>
+
+    <div class="section">
+      <div class="section-label">チーム情報</div>
+      <div class="form-group" id="g-teamname">
+        <label>チーム名<span class="required">*</span></label>
+        <input type="text" id="teamName" placeholder="例：Kansai Warriors">
+        <div class="error-msg">チーム名を入力してください</div>
+      </div>
+      <div class="form-group" id="g-rep">
+        <label>代表者名 / Discord ID<span class="required">*</span></label>
+        <input type="text" id="repName" placeholder="例：スト6太郎 / sto#6666">
+        <div class="error-msg">代表者名・Discord IDを入力してください</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-label">参加メンバー情報</div>
+      <div class="member-list" id="memberList"></div>
+      <button class="btn-add" onclick="addMember()" id="addBtn">＋ メンバーを追加</button>
+    </div>
+
+    <div class="section">
+      <div class="section-label">注意事項</div>
+      <div class="notice-box">
+        <b>【回線・対戦進行】</b>
+        ・回線エラーで対戦不可な場合は、両者の対戦順を変えて対戦を試みてください。<br>
+        ・どちらか一方がエラーの場合はエラー側の敗戦、両者とも問題なし／両者ともエラーの場合は両者敗戦とします。
+        <b>【キャラ・操作タイプ】</b>
+        ・事前申告した使用キャラ・操作タイプは当日と一致させてください。変更が生じる場合は必ず事前にご連絡ください。
+        <b>【配信・肖像】</b>
+        ・対戦映像およびプレイヤー名は配信・アーカイブに使用されます。参加をもって同意いただいたものとみなします。<br>
+        ・配信中の不適切な発言・行為は禁止します。
+        <b>【コミュニティ】</b>
+        ・対戦相手・運営スタッフへの誹謗中傷・暴言は禁止します。<br>
+        ・SNS上での対戦結果に関する不適切な発信はお控えください。
+        <b>【運営・連絡】</b>
+        ・無断欠席・直前キャンセルは運営に必ずご連絡ください。<br>
+        ・当日の緊急連絡はDiscordを通じて行います。<br>
+        ・ルール解釈・進行変更等の運営判断には従っていただきます。
+      </div>
+      <label class="agree-row">
+        <input type="checkbox" id="agreeCheck" onchange="checkAgree()">
+        <span class="agree-text">上記の注意事項をすべて確認し、同意します</span>
+      </label>
+    </div>
+
+    <button class="btn-submit" id="submitBtn" onclick="submitForm()" disabled>エントリーを送信する</button>
+  </div>
+
+  <div class="success-screen" id="successScreen">
+    <div class="success-icon">⚔️</div>
+    <div class="success-title">エントリー完了</div>
+    <div class="success-sub">
+      エントリーを受け付けました。<br>
+      当日はDiscordにてご連絡いたします。<br>
+      ご参加お待ちしております！<br><br>
+      <span style="color:var(--accent);font-weight:700;">— BFTC運営</span>
+    </div>
+  </div>
+</div>
+
+<div class="sending-overlay" id="sendingOverlay">
+  <div class="spinner"></div>
+  <div class="sending-text">送信中...</div>
+</div>
+
+<script>
+  // ★ Google Apps ScriptをデプロイしたらここのURLを書き換えてください
+  const GAS_URL = 'YOUR_GAS_DEPLOY_URL_HERE';
+
+  let memberCount = 0;
+  const MAX_MEMBERS = 15;
+
+  addMember(); // 初期1名
+
+  function addMember() {
+    if (memberCount >= MAX_MEMBERS) return;
+    memberCount++;
+    const num = memberCount;
+    const isFirst = num === 1;
+
+    const card = document.createElement('div');
+    card.className = 'member-card';
+    card.id = `member-${num}`;
+    card.innerHTML = `
+      <div class="member-header">
+        <div class="member-num">MEMBER ${num}</div>
+        ${!isFirst ? `<button class="btn-remove" onclick="removeMember(${num})">削除</button>` : ''}
+      </div>
+      <div class="member-grid">
+        <div class="form-group" id="g-pname-${num}">
+          <label>プレイヤー名${isFirst ? '<span class="required">*</span>' : ''}</label>
+          <input type="text" id="pname-${num}" placeholder="例：スト6太郎">
+          <div class="error-msg">プレイヤー名を入力してください</div>
+        </div>
+        <div class="form-group" id="g-chara-${num}">
+          <label>使用キャラクター${isFirst ? '<span class="required">*</span>' : ''}</label>
+          <input type="text" id="chara-${num}" placeholder="例：リュウ">
+          <div class="error-msg">使用キャラを入力してください</div>
+        </div>
+        <div class="form-group" id="g-rank-${num}">
+          <label>ランク帯 / MR${isFirst ? '<span class="required">*</span>' : ''}</label>
+          <input type="text" id="rank-${num}" placeholder="例：ゴールド3 / MR1500">
+          <div class="error-msg">ランク帯を入力してください</div>
+        </div>
+        <div class="form-group">
+          <label>操作タイプ${isFirst ? '<span class="required">*</span>' : ''}</label>
+          <div class="op-group">
+            <label class="op-label"><input type="radio" name="op-${num}" value="C"> C（クラシック）</label>
+            <label class="op-label"><input type="radio" name="op-${num}" value="M"> M（モダン）</label>
+          </div>
+          <div class="error-msg" id="op-err-${num}" style="display:none">操作タイプを選択してください</div>
+        </div>
+      </div>
+    `;
+    document.getElementById('memberList').appendChild(card);
+    if (memberCount >= MAX_MEMBERS) document.getElementById('addBtn').style.display = 'none';
+  }
+
+  function removeMember(num) {
+    const card = document.getElementById(`member-${num}`);
+    if (card) card.remove();
+    if (memberCount >= MAX_MEMBERS) document.getElementById('addBtn').style.display = 'block';
+  }
+
+  function checkAgree() {
+    document.getElementById('submitBtn').disabled = !document.getElementById('agreeCheck').checked;
+  }
+
+  function validate() {
+    let valid = true;
+
+    const teamName = document.getElementById('teamName').value.trim();
+    const gTeam = document.getElementById('g-teamname');
+    teamName ? gTeam.classList.remove('has-error') : (gTeam.classList.add('has-error'), valid = false);
+
+    const rep = document.getElementById('repName').value.trim();
+    const gRep = document.getElementById('g-rep');
+    rep ? gRep.classList.remove('has-error') : (gRep.classList.add('has-error'), valid = false);
+
+    // メンバー1のみ必須チェック
+    const firstCard = document.querySelector('.member-card');
+    if (!firstCard) return false;
+    const id = firstCard.id.replace('member-', '');
+
+    const pname = document.getElementById(`pname-${id}`)?.value.trim();
+    pname ? document.getElementById(`g-pname-${id}`).classList.remove('has-error')
+          : (document.getElementById(`g-pname-${id}`).classList.add('has-error'), valid = false);
+
+    const chara = document.getElementById(`chara-${id}`)?.value.trim();
+    chara ? document.getElementById(`g-chara-${id}`).classList.remove('has-error')
+          : (document.getElementById(`g-chara-${id}`).classList.add('has-error'), valid = false);
+
+    const rank = document.getElementById(`rank-${id}`)?.value.trim();
+    rank ? document.getElementById(`g-rank-${id}`).classList.remove('has-error')
+         : (document.getElementById(`g-rank-${id}`).classList.add('has-error'), valid = false);
+
+    const op = document.querySelector(`input[name="op-${id}"]:checked`);
+    const opErr = document.getElementById(`op-err-${id}`);
+    op ? opErr.style.display = 'none' : (opErr.style.display = 'block', valid = false);
+
+    return valid;
+  }
+
+  function getMembers() {
+    return [...document.querySelectorAll('.member-card')].map(card => {
+      const id = card.id.replace('member-', '');
+      const op = document.querySelector(`input[name="op-${id}"]:checked`);
+      return {
+        playerName: document.getElementById(`pname-${id}`)?.value.trim() || '',
+        character:  document.getElementById(`chara-${id}`)?.value.trim() || '',
+        rank:       document.getElementById(`rank-${id}`)?.value.trim() || '',
+        opType:     op ? op.value : ''
+      };
+    }).filter(m => m.playerName || m.character);
+  }
+
+  async function submitForm() {
+    if (!validate()) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
+
+    const payload = {
+      teamName:  document.getElementById('teamName').value.trim(),
+      repName:   document.getElementById('repName').value.trim(),
+      members:   getMembers(),
+      timestamp: new Date().toLocaleString('ja-JP')
+    };
+
+    document.getElementById('sendingOverlay').classList.add('active');
+
+    try {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      document.getElementById('sendingOverlay').classList.remove('active');
+      document.getElementById('formScreen').style.display = 'none';
+      document.getElementById('successScreen').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      document.getElementById('sendingOverlay').classList.remove('active');
+      alert('送信に失敗しました。時間をおいて再度お試しください。');
+    }
+  }
+</script>
+</body>
+</html>
