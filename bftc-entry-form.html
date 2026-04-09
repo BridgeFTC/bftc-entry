@@ -414,33 +414,39 @@
     }).filter(m => m.playerName || m.character);
   }
 
-  async function submitForm() {
+  function submitForm() {
     if (!validate()) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
 
-    const payload = {
-      teamName:  document.getElementById('teamName').value.trim(),
-      repName:   document.getElementById('repName').value.trim(),
-      members:   getMembers(),
-      timestamp: new Date().toLocaleString('ja-JP')
-    };
+    const members = getMembers();
+    const timestamp = new Date().toLocaleString('ja-JP');
+    const teamName = document.getElementById('teamName').value.trim();
+    const repName = document.getElementById('repName').value.trim();
+
+    let params = new URLSearchParams();
+    params.append('teamName', teamName);
+    params.append('repName', repName);
+    params.append('timestamp', timestamp);
+    params.append('memberCount', members.length);
+    members.forEach((m, i) => {
+      params.append('member'+(i+1)+'_name', m.playerName);
+      params.append('member'+(i+1)+'_chara', m.character);
+      params.append('member'+(i+1)+'_rank', m.rank);
+      params.append('member'+(i+1)+'_op', m.opType);
+    });
 
     document.getElementById('sendingOverlay').classList.add('active');
 
-    try {
-      await fetch(GAS_URL, {
-        method: 'POST',
-        mode: 'cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+    fetch(GAS_URL + '?' + params.toString())
+      .then(() => {
+        document.getElementById('sendingOverlay').classList.remove('active');
+        document.getElementById('formScreen').style.display = 'none';
+        document.getElementById('successScreen').style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      })
+      .catch(() => {
+        document.getElementById('sendingOverlay').classList.remove('active');
+        alert('送信に失敗しました。時間をおいて再度お試しください。');
       });
-      document.getElementById('sendingOverlay').classList.remove('active');
-      document.getElementById('formScreen').style.display = 'none';
-      document.getElementById('successScreen').style.display = 'block';
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    } catch (err) {
-      document.getElementById('sendingOverlay').classList.remove('active');
-      alert('送信に失敗しました。時間をおいて再度お試しください。');
-    }
   }
 </script>
 </body>
