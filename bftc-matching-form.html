@@ -372,7 +372,7 @@
     if (!validate()) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
 
     const params = new URLSearchParams();
-    params.append('formType', 'matching'); new Date().toLocaleString('ja-JP'));
+    params.append('formType', 'matching');
     params.append('teamName',  document.getElementById('teamName').value.trim());
     params.append('repName',   document.getElementById('repName').value.trim());
     params.append('region',    document.getElementById('region').value);
