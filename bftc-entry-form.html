@@ -272,6 +272,8 @@
         <b>【コミュニティ】</b>
         ・対戦相手・運営スタッフへの誹謗中傷・暴言は禁止します。<br>
         ・SNS上での対戦結果に関する不適切な発信はお控えください。
+        <b>【データ取得・活用】</b>
+        ・参加者のSF6ユーザーコードをもとに、対戦スタッツ等のデータを取得・活用する場合があります。
         <b>【運営・連絡】</b>
         ・無断欠席・直前キャンセルは運営に必ずご連絡ください。<br>
         ・当日の緊急連絡はDiscordを通じて行います。<br>
@@ -305,7 +307,7 @@
 
 <script>
   // ★ Google Apps ScriptをデプロイしたらここのURLを書き換えてください
-  const GAS_URL = 'https://script.google.com/macros/s/AKfycbxPhj1Dhtm-p9gXXd1hJlnO526i7488aK78aNNKiK__d6329QhH2U4fPQFwaaMWED2I/exec';
+  const GAS_URL = 'YOUR_GAS_DEPLOY_URL_HERE';
 
   let memberCount = 0;
   const MAX_MEMBERS = 15;
@@ -331,6 +333,10 @@
           <label>プレイヤー名${isFirst ? '<span class="required">*</span>' : ''}</label>
           <input type="text" id="pname-${num}" placeholder="例：スト6太郎">
           <div class="error-msg">プレイヤー名を入力してください</div>
+        </div>
+        <div class="form-group">
+          <label>ユーザーコード</label>
+          <input type="text" id="ucode-${num}" placeholder="例：1234567890">
         </div>
         <div class="form-group" id="g-chara-${num}">
           <label>使用キャラクター${isFirst ? '<span class="required">*</span>' : ''}</label>
@@ -414,39 +420,33 @@
     }).filter(m => m.playerName || m.character);
   }
 
-  function submitForm() {
+  async function submitForm() {
     if (!validate()) { window.scrollTo({ top: 0, behavior: 'smooth' }); return; }
 
-    const members = getMembers();
-    const timestamp = new Date().toLocaleString('ja-JP');
-    const teamName = document.getElementById('teamName').value.trim();
-    const repName = document.getElementById('repName').value.trim();
-
-    let params = new URLSearchParams();
-    params.append('teamName', teamName);
-    params.append('repName', repName);
-    params.append('timestamp', timestamp);
-    params.append('memberCount', members.length);
-    members.forEach((m, i) => {
-      params.append('member'+(i+1)+'_name', m.playerName);
-      params.append('member'+(i+1)+'_chara', m.character);
-      params.append('member'+(i+1)+'_rank', m.rank);
-      params.append('member'+(i+1)+'_op', m.opType);
-    });
+    const payload = {
+      teamName:  document.getElementById('teamName').value.trim(),
+      repName:   document.getElementById('repName').value.trim(),
+      members:   getMembers(),
+      timestamp: new Date().toLocaleString('ja-JP')
+    };
 
     document.getElementById('sendingOverlay').classList.add('active');
 
-    fetch(GAS_URL + '?' + params.toString())
-      .then(() => {
-        document.getElementById('sendingOverlay').classList.remove('active');
-        document.getElementById('formScreen').style.display = 'none';
-        document.getElementById('successScreen').style.display = 'block';
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      })
-      .catch(() => {
-        document.getElementById('sendingOverlay').classList.remove('active');
-        alert('送信に失敗しました。時間をおいて再度お試しください。');
+    try {
+      await fetch(GAS_URL, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
       });
+      document.getElementById('sendingOverlay').classList.remove('active');
+      document.getElementById('formScreen').style.display = 'none';
+      document.getElementById('successScreen').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch (err) {
+      document.getElementById('sendingOverlay').classList.remove('active');
+      alert('送信に失敗しました。時間をおいて再度お試しください。');
+    }
   }
 </script>
 </body>
